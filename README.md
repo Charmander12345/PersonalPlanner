@@ -6,4 +6,4 @@ It is made using python and customtkinter for the UI.
 # Changelog
 V0.1
 - Added login screen where you can create accounts locally and login to them if multiple people are using the app.
-- Added clock snd date display which scales to the window size
+- Added clock and date display which scales to the window size
