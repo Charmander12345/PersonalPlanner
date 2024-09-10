@@ -1,0 +1,1 @@
+This is a repository for my personal planner app. Once its finished youre gonna be able to handle calendar, events and much more with it.
