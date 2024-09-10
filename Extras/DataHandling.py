@@ -32,6 +32,13 @@ def getTheme():
     except KeyError:
         writeINI("customization","theme","System")
         return "System"
+    
+def getWindowStyle():
+    try:
+        return config["customization"]["style"]
+    except KeyError:
+        writeINI("customization","style","normal")
+        return "normal"
 def getLoginState():
     try:
         if config["data"]["loginstate"] == "true":

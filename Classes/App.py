@@ -10,6 +10,9 @@ import pymsgbox
 import time
 from datetime import datetime
 from PIL import Image, ImageOps
+from hPyT import *
+import pywinstyles
+from CTkMessagebox import *
 
 class MyApp(ctk.CTk):
     def __init__(self):
@@ -20,10 +23,11 @@ class MyApp(ctk.CTk):
         self.main_screen = ctk.CTkFrame(self)
         self.loading_screen = ctk.CTkFrame(self)
         self.Font = "Comic Sans MS"
+        self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
         ctk.set_appearance_mode(DataHandling.getTheme())
         if ctk.get_appearance_mode() == "Dark":
-            self.ButtonHoverColor = "#333333"
+            self.ButtonHoverColor = "#4d4d4d"
         elif ctk.get_appearance_mode() == "Light":
             self.ButtonHoverColor = "#C0C0C0"
         else:
@@ -32,7 +36,7 @@ class MyApp(ctk.CTk):
                 self.ButtonHoverColor = "#C0C0C0"
                 print("System ist Light Mode")
             else:
-                self.ButtonHoverColor = "#333333"
+                self.ButtonHoverColor = "#4d4d4d"
                 print("System ist im Dark Mode")
         self.create_widgets()
         self.protocol("WM_DELETE_WINDOW",self.SaveWindowState)
@@ -65,8 +69,11 @@ class MyApp(ctk.CTk):
         self.LeftSideBar = ctk.CTkFrame(self.main_screen,corner_radius=0)
         self.LeftSideBar.place(relx=0,rely=0.5,anchor="center",relwidth=0.1,relheight=1)
         self.settingsIcon = ctk.CTkImage(light_image=Image.open("icons\\Settings.png"),dark_image=ImageOps.invert(Image.open("icons\\Settings.png").convert("RGB")))
-        self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2")
+        self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
         self.SettingsButton.place(relx=0.75,rely=0.95,anchor="center")
+        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open("icons\\home.png"),dark_image=ImageOps.invert(Image.open("icons\\home.png").convert("RGB")))
+        self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
+        self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
 
         self.show_Login()
 
@@ -78,6 +85,7 @@ class MyApp(ctk.CTk):
         self.state("normal")
         self.Username_Entry.configure(state="normal")
         self.Password_Entry.configure(state="normal")
+        pywinstyles.apply_style(self,self.WindowStyle)
         self.focus_set()
     
     def show_Main(self):
@@ -85,7 +93,8 @@ class MyApp(ctk.CTk):
         self.loading_screen.pack_forget()
         self.main_screen.pack(fill="both",expand=True)
         self.resizable(width=True,height=True)
-        self.state("zoomed")
+        #self.state("zoomed")
+        pywinstyles.apply_style(self,self.WindowStyle)
         self.after(1,self.update_time)
         self.after(1,self.update_date)
 
@@ -94,12 +103,27 @@ class MyApp(ctk.CTk):
         self.loginscreen.pack_forget()
         self.loading_screen.pack(fill="both",expand=True)
         self.loadingbar.start()
+        pywinstyles.apply_style(self,self.WindowStyle)
+    
+    def show_settings(self):
+        self.HomeScreen.place_forget()
+        self.SettingsFrame.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
+        pywinstyles.apply_style(self,self.WindowStyle)
+
+    def show_home(self):
+        self.SettingsFrame.place_forget()
+        self.HomeScreen.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
+        pywinstyles.apply_style(self,self.WindowStyle)
+
+    def set_active_button(self,button:ctk.CTkButton):
+        button.configure(fg_color=self.ButtonHoverColor,hover_color="transparent")
 
     def SaveWindowState(self):
         DataHandling.writeINI("window","windowmode",self.state())
         DataHandling.writeINI("window","width",str(self.winfo_width()))
         DataHandling.writeINI("window","height",str(self.winfo_height()))
         DataHandling.writeINI("customization","theme",ctk.get_appearance_mode())
+        DataHandling.writeINI("customization","style",self.WindowStyle)
         self.destroy()
 
     def Login(self):
@@ -114,15 +138,18 @@ class MyApp(ctk.CTk):
             if DataHandling.LOGIN(Username=Username,Password=Password):
                 self.LoadAccountData(Username)
         except Errors.UnknownAccountError as e:
-            pymsgbox.alert(e,"UnknownAccountError")
+            CTkMessagebox(self,title="UnknownAccountError",message=e,icon="cancel",cancel_button="None")
+            #pymsgbox.alert(e,"UnknownAccountError")
             self.Username_Entry.configure(state="normal")
             self.Password_Entry.configure(state="normal")
         except Errors.PasswordIncorrectError as e:
-            pymsgbox.alert(e,"PasswordIncorrectError")
+            CTkMessagebox(self,title="IncorrectPasswordError",message=e,icon="cancel")
+            #pymsgbox.alert(e,"PasswordIncorrectError")
             self.Username_Entry.configure(state="normal")
             self.Password_Entry.configure(state="normal")
         except Errors.AccountsFileNotFoundError as e:
-            pymsgbox.alert(e,"AccountsFileNotFoundError")
+            CTkMessagebox(self,title="AccountsFileNotFoundError",message=e,icon="warning")
+            #pymsgbox.alert(e,"AccountsFileNotFoundError")
             self.Username_Entry.configure(state="normal")
             self.Password_Entry.configure(state="normal")
     
@@ -140,7 +167,8 @@ class MyApp(ctk.CTk):
                 self.Password_Entry.configure(state="normal")
 
         except Errors.AccountAlreadyExistsError as e:
-            pymsgbox.alert(e,"AccountAlreadyExistsError")
+            CTkMessagebox(self,title="AccountAlreadyExistsError",message=e,icon="cancel")
+            #pymsgbox.alert(e,"AccountAlreadyExistsError")
             self.Username_Entry.configure(state="normal")
             self.Password_Entry.configure(state="normal")
 
@@ -150,7 +178,8 @@ class MyApp(ctk.CTk):
             DataHandling.LOADACCOUNTDATA(Username)
             self.show_Main()
         except Errors.AccountDataNotFoundError as e:
-            pymsgbox.alert(e,"AccountDataNotFoundError")
+            CTkMessagebox(self,title="AccountDataNotFoundError",message=e,icon= "warning")
+            #pymsgbox.alert(e,"AccountDataNotFoundError")
             self.Username_Entry.configure(state="normal")
             self.Password_Entry.configure(state="normal")
             self.show_Login()
