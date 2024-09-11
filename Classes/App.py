@@ -13,7 +13,7 @@ from PIL import Image, ImageOps
 from hPyT import *
 import pywinstyles
 from CTkMessagebox import *
-from Classes import Setting
+from Classes import Setting,Updater
 
 class MyApp(ctk.CTk):
     def __init__(self):
@@ -26,6 +26,7 @@ class MyApp(ctk.CTk):
         self.Font = "Comic Sans MS"
         self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
+        self.updater = Updater.Updater("Charmander12345/PersonalPlanner",)
         ctk.set_appearance_mode(DataHandling.getTheme())
         if ctk.get_appearance_mode() == "Dark":
             self.ButtonHoverColor = "#4d4d4d"
@@ -76,8 +77,8 @@ class MyApp(ctk.CTk):
         self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="#333333",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
-        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16))
-        self.AppearanceMode.pack(pady=5,fill="x", expand=True)
+        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection)
+        self.AppearanceMode.pack(fill="x", expand=True)
 
         self.show_Login()
 
@@ -219,3 +220,8 @@ class MyApp(ctk.CTk):
         # Schriftgröße im Label aktualisieren
         self.ClockLabel.configure(font=(self.Font, new_font_size))
         self.DateLabel.configure(font=(self.Font, new_font_size_date))
+
+    def handle_option_selection(self,settingsname:str,value:str):
+        if settingsname == "Appearance Mode":
+            ctk.set_appearance_mode(value)
+            self.WindowStyle = value
