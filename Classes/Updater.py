@@ -18,6 +18,7 @@ class Updater:
         response = requests.get(url)
         if response.status_code == 200:
             version = response.text.replace("__version__=","")
+            version = version.replace("\"","")
             return version.strip()
         else:
             print(f"Error fetching version from GitHub: {response.status_code}")
@@ -35,7 +36,6 @@ class Updater:
             print(f"Neue Version verfügbar: {repo_version} (aktuell: {local_version})")
             return True
         else:
-            print("Programm ist auf dem neuesten Stand.")
             return False
 
     def download_update(self):

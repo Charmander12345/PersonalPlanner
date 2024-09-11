@@ -16,6 +16,7 @@ import pywinstyles
 from CTkMessagebox import *
 from Classes import Setting,Updater
 from ctk_components import *
+import threading
 
 
 class MyApp(ctk.CTk):
@@ -30,7 +31,8 @@ class MyApp(ctk.CTk):
         self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
         self.updater = Updater.Updater("Charmander12345/PersonalPlanner","Classes/__init__.py")
-        ctk.set_appearance_mode(DataHandling.getTheme())
+        self.theme = DataHandling.getTheme()
+        ctk.set_appearance_mode(self.theme)
         if ctk.get_appearance_mode() == "Dark":
             self.ButtonHoverColor = "#4d4d4d"
         elif ctk.get_appearance_mode() == "Light":
@@ -80,13 +82,11 @@ class MyApp(ctk.CTk):
         self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="#333333",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
-        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection)
+        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection,selected_option=self.theme)
         self.AppearanceMode.pack(fill="x", expand=True)
-        if self.updater.check_for_update():
-            self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
-            if self.updatebanner.get() == "Install now":
-                self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
         self.show_Login()
+        self.updatethread = threading.Thread(target=self.check_for_update)
+        self.updatethread.start()
 
     def show_Login(self):
         self.main_screen.pack_forget()
@@ -230,4 +230,18 @@ class MyApp(ctk.CTk):
     def handle_option_selection(self,settingsname:str,value:str):
         if settingsname == "Appearance Mode":
             ctk.set_appearance_mode(value)
-            self.WindowStyle = value
+            self.theme = value
+
+    def check_for_update(self):
+        if self.updater.check_for_update():
+            self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
+            if self.updatebanner.get() == "Install now":
+                self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
+        elif self.updater.check_for_update() == None:
+            self.updatebanner = CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
+            time.sleep(4)
+            self.updatebanner.destroy()
+        else:
+            self.updatebanner = CTkNotification(self,state="info",message="Client Version up to date")
+            time.sleep(4)
+            self.updatebanner.destroy()
