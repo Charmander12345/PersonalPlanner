@@ -7,7 +7,7 @@ import subprocess
 import sys
 import Classes
 class Updater:
-    def __init__(self, repo_url, repo_version_file):
+    def __init__(self, repo_url, repo_version_file:str = ""):
         self.repo_url = repo_url
         self.repo_version_file = repo_version_file
         self.repo_zip_url = f"https://github.com/{repo_url}/archive/refs/heads/main.zip"
@@ -26,7 +26,7 @@ class Updater:
 
     def check_for_update(self):
         """Prüft, ob eine neue Version verfügbar ist."""
-        local_version = Classes.__version__
+        local_version =Classes.__version__
         repo_version = self.get_repo_version()
 
         if local_version is None:
@@ -98,5 +98,8 @@ class Updater:
                 subprocess.Popen([sys.executable] + sys.argv, start_new_session=True)
         sys.exit()
 
-    def main():
-        
+    def main(self):
+        self.trigger_update()
+
+if __name__ == "__main__":
+    updater = Updater(repo_url="Charmander12345/PersonalPlanner")

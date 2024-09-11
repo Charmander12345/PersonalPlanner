@@ -238,7 +238,9 @@ class MyApp(ctk.CTk):
             self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
             if self.updatebanner.get() == "Install now":
                 self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
+                print("installation confirmed")
                 subprocess.Popen([sys.executable, "Updater.py"], creationflags=subprocess.DETACHED_PROCESS)
+                print("starting subprocess")
                 quit()
         elif self.updater.check_for_update() == None:
             self.updatebanner = CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
