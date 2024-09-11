@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "./Extras"
+        "./Extras",
+        "./ADDONS/ctk_components-main"
     ]
 }

@@ -6,7 +6,6 @@ import shutil
 import subprocess
 import sys
 import Classes
-
 class Updater:
     def __init__(self, repo_url, repo_version_file):
         self.repo_url = repo_url
@@ -18,7 +17,8 @@ class Updater:
         url = f"https://raw.githubusercontent.com/{self.repo_url}/main/{self.repo_version_file}"
         response = requests.get(url)
         if response.status_code == 200:
-            return response.text.strip()
+            version = response.text.replace("__version__=","")
+            return version.strip()
         else:
             print(f"Error fetching version from GitHub: {response.status_code}")
             return None

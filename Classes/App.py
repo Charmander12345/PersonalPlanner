@@ -4,6 +4,7 @@ import sys
 import os
 from tkinter import filedialog
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Extras')))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ADDONS', 'ctk_components-main'))
 import DataHandling
 import Errors
 import pymsgbox
@@ -14,6 +15,8 @@ from hPyT import *
 import pywinstyles
 from CTkMessagebox import *
 from Classes import Setting,Updater
+from ctk_components import *
+
 
 class MyApp(ctk.CTk):
     def __init__(self):
@@ -26,7 +29,7 @@ class MyApp(ctk.CTk):
         self.Font = "Comic Sans MS"
         self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
-        self.updater = Updater.Updater("Charmander12345/PersonalPlanner",)
+        self.updater = Updater.Updater("Charmander12345/PersonalPlanner","Classes/__init__.py")
         ctk.set_appearance_mode(DataHandling.getTheme())
         if ctk.get_appearance_mode() == "Dark":
             self.ButtonHoverColor = "#4d4d4d"
@@ -79,7 +82,10 @@ class MyApp(ctk.CTk):
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
         self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection)
         self.AppearanceMode.pack(fill="x", expand=True)
-
+        if self.updater.check_for_update():
+            self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
+            if self.updatebanner.get() == "Install now":
+                self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
         self.show_Login()
 
     def show_Login(self):
