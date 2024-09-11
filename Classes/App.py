@@ -13,6 +13,7 @@ from PIL import Image, ImageOps
 from hPyT import *
 import pywinstyles
 from CTkMessagebox import *
+from Classes import Setting
 
 class MyApp(ctk.CTk):
     def __init__(self):
@@ -68,12 +69,15 @@ class MyApp(ctk.CTk):
         self.ClockFrame.place(relx=0.93,rely=0.07,anchor="center",relwidth=0.15,relheight=0.15)
         self.LeftSideBar = ctk.CTkFrame(self.main_screen,corner_radius=0)
         self.LeftSideBar.place(relx=0,rely=0.5,anchor="center",relwidth=0.1,relheight=1)
-        self.settingsIcon = ctk.CTkImage(light_image=Image.open("icons\\Settings.png"),dark_image=ImageOps.invert(Image.open("icons\\Settings.png").convert("RGB")))
+        self.settingsIcon = ctk.CTkImage(light_image=Image.open("icons\\light\\Settings.png"),dark_image=Image.open("icons\\dark\\Settings.png"))
         self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
         self.SettingsButton.place(relx=0.75,rely=0.95,anchor="center")
-        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open("icons\\home.png"),dark_image=ImageOps.invert(Image.open("icons\\home.png").convert("RGB")))
-        self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
+        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open("icons\\light\\home.png"),dark_image=Image.open("icons\\dark\\home.png"))
+        self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="#333333",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
+        self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
+        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16))
+        self.AppearanceMode.place(relx=0.5,rely=0.1,anchor="center")
 
         self.show_Login()
 
