@@ -18,6 +18,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'A
 from ADDONS import ctk_components
 import threading
 import subprocess
+import pathlib
 
 
 class MyApp(ctk.CTk):
@@ -76,10 +77,11 @@ class MyApp(ctk.CTk):
         self.ClockFrame.place(relx=0.93,rely=0.07,anchor="center",relwidth=0.15,relheight=0.15)
         self.LeftSideBar = ctk.CTkFrame(self.main_screen,corner_radius=0)
         self.LeftSideBar.place(relx=0,rely=0.5,anchor="center",relwidth=0.1,relheight=1)
-        self.settingsIcon = ctk.CTkImage(light_image=Image.open("icons\\light\\Settings.png"),dark_image=Image.open("icons\\dark\\Settings.png"))
+        self.settingsIcon = ctk.CTkImage(light_image=Image.open(pathlib.Path("icons/Settings_light.png")),dark_image=Image.open(pathlib.Path("icons/Settings_dark.png")))
         self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
         self.SettingsButton.place(relx=0.75,rely=0.95,anchor="center")
-        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open("icons\\light\\home.png"),dark_image=Image.open("icons\\dark\\home.png"))
+        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open(pathlib.Path("icons/home_light.png")),dark_image=Image.open(pathlib.Path("icons/home_dark.png")))
+        print(os.path.exists(pathlib.Path("icons/home_light.png")))
         self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="#333333",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
