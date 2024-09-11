@@ -77,7 +77,7 @@ class MyApp(ctk.CTk):
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
         self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16))
-        self.AppearanceMode.place(relx=0.5,rely=0.1,anchor="center")
+        self.AppearanceMode.pack(pady=5,fill="x", expand=True)
 
         self.show_Login()
 
