@@ -5,7 +5,7 @@ import io
 import shutil
 import subprocess
 import sys
-import Classes
+from Classes import __version__
 class Updater:
     def __init__(self, repo_url, repo_version_file:str = ""):
         self.repo_url = repo_url
@@ -26,7 +26,7 @@ class Updater:
 
     def check_for_update(self):
         """Prüft, ob eine neue Version verfügbar ist."""
-        local_version =Classes.__version__
+        local_version =__version__
         repo_version = self.get_repo_version()
 
         if local_version is None:
@@ -88,15 +88,6 @@ class Updater:
         if temp_folder:
             # Schließe das aktuelle Programm, update und starte es neu
             self.apply_update(temp_folder)
-
-            # Starte das Programm neu, aber unabhängig vom aktuellen Prozess
-            print("Starte das Programm neu...")
-
-            if os.name == 'nt':  # Windows
-                subprocess.Popen([sys.executable] + sys.argv, creationflags=subprocess.DETACHED_PROCESS)
-            else:  # Unix-basierte Systeme (Linux, macOS)
-                subprocess.Popen([sys.executable] + sys.argv, start_new_session=True)
-        sys.exit()
 
     def main(self):
         self.trigger_update()

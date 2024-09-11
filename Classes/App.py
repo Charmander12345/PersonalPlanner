@@ -4,7 +4,6 @@ import sys
 import os
 from tkinter import filedialog
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Extras')))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ADDONS', 'ctk_components-main'))
 import DataHandling
 import Errors
 import pymsgbox
@@ -14,8 +13,9 @@ from PIL import Image, ImageOps
 from hPyT import *
 import pywinstyles
 from CTkMessagebox import *
-from Classes import Setting,Updater
-from ctk_components import *
+from Classes import Setting,updatermodule
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ADDONS')))
+from ADDONS import ctk_components
 import threading
 import subprocess
 
@@ -31,7 +31,7 @@ class MyApp(ctk.CTk):
         self.Font = "Comic Sans MS"
         self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
-        self.updater = Updater.Updater("Charmander12345/PersonalPlanner","Classes/__init__.py")
+        self.updater = updatermodule.Updater("Charmander12345/PersonalPlanner","Classes/__init__.py")
         self.theme = DataHandling.getTheme()
         ctk.set_appearance_mode(self.theme)
         if ctk.get_appearance_mode() == "Dark":
@@ -235,18 +235,19 @@ class MyApp(ctk.CTk):
 
     def check_for_update(self):
         if self.updater.check_for_update():
-            self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
+            self.updatebanner = ctk_components.CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
             if self.updatebanner.get() == "Install now":
-                self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
+                self.progress = ctk_components.CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
                 print("installation confirmed")
                 subprocess.Popen([sys.executable, "Updater.py"], creationflags=subprocess.DETACHED_PROCESS)
                 print("starting subprocess")
+                self.quit()
                 quit()
         elif self.updater.check_for_update() == None:
-            self.updatebanner = CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
+            self.updatebanner = ctk_components.CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
             time.sleep(4)
             self.updatebanner.destroy()
         else:
-            self.updatebanner = CTkNotification(self,state="info",message="Client Version up to date")
+            self.updatebanner = ctk_components.CTkNotification(self,state="info",message="Client Version up to date")
             time.sleep(4)
             self.updatebanner.destroy()
