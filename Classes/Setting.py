@@ -10,6 +10,6 @@ class Settings(ctk.CTkFrame):
         self.font = font
         if self.optiontype == 0: #Optionsmenu Widget
             self.Label = ctk.CTkLabel(self,text=self.settingname,font=self.font)
-            self.Label.place(relx=0.5,rely=0.3,anchor="center")
+            self.Label.pack(side="left")
             self.optionsmenu = ctk.CTkOptionMenu(self,values=self.options)
-            self.optionsmenu.place(relx=0.5,rely=0.6,anchor="center")
+            self.optionsmenu.pack(side="right")
