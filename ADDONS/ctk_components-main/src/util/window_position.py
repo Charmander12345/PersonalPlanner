@@ -1,3 +1,4 @@
+import tkinter as tk
 def center_window(root, width, height):
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -21,13 +22,16 @@ def place_window_bottom_right(master, child, width, height, padx=20, pady=20):
 
 
 def place_frame(master, frame, horizontal="right", vertical="bottom", padx=20, pady=20):
-    master_width = master.winfo_width()
-    master_height = master.winfo_height()
+    try:
+        master_width = master.winfo_width()
+        master_height = master.winfo_height()
 
-    frame_width = frame.winfo_reqwidth()
-    frame_height = frame.winfo_reqheight()
+        frame_width = frame.winfo_reqwidth()
+        frame_height = frame.winfo_reqheight()
 
-    frame_x = 20 if horizontal == "left" else master_width - frame_width - padx
-    frame_y = 20 if vertical == "top" else master_height - frame_height - pady
+        frame_x = 20 if horizontal == "left" else master_width - frame_width - padx
+        frame_y = 20 if vertical == "top" else master_height - frame_height - pady
 
-    frame.place(x=frame_x, y=frame_y)
+        frame.place(x=frame_x, y=frame_y)
+    except tk.TclError:
+        pass

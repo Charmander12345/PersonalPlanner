@@ -97,3 +97,6 @@ class Updater:
             else:  # Unix-basierte Systeme (Linux, macOS)
                 subprocess.Popen([sys.executable] + sys.argv, start_new_session=True)
         sys.exit()
+
+    def main():
+        

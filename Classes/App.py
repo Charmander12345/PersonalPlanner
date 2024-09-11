@@ -17,6 +17,7 @@ from CTkMessagebox import *
 from Classes import Setting,Updater
 from ctk_components import *
 import threading
+import subprocess
 
 
 class MyApp(ctk.CTk):
@@ -237,6 +238,8 @@ class MyApp(ctk.CTk):
             self.updatebanner = CTkBanner(self,state="info",title="Update available",btn1="Install now",btn2="Cancel")
             if self.updatebanner.get() == "Install now":
                 self.progress = CTkProgressPopup(self,title="Updating now",message="Fetching update from GitHub...")
+                subprocess.Popen([sys.executable, "Updater.py"], creationflags=subprocess.DETACHED_PROCESS)
+                quit()
         elif self.updater.check_for_update() == None:
             self.updatebanner = CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
             time.sleep(4)
