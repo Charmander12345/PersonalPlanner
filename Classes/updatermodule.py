@@ -67,9 +67,12 @@ class Updater:
         print("Update abgeschlossen. Temporärer Ordner entfernt.")
 
     def copy_files(self, src_dir, dest_dir):
-        """Kopiert die Dateien vom temporären Ordner ins Zielverzeichnis und ersetzt sie."""
+        """Kopiert die Dateien und Ordner vom personalplanner-main Ordner ins Zielverzeichnis, behält die Struktur bei."""
         for root, dirs, files in os.walk(src_dir):
+            # Berechne den relativen Pfad, aber ignoriere den `personalplanner-main` Ordner
             relative_path = os.path.relpath(root, src_dir)
+
+            # Setze das Zielverzeichnis ohne den personalplanner-main Ordner
             target_dir = os.path.join(dest_dir, relative_path)
 
             if not os.path.exists(target_dir):

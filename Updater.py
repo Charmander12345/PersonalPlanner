@@ -5,6 +5,7 @@ import customtkinter as ctk
 import threading
 import subprocess
 import sys
+import Classes
 
 root = ctk.CTk()
 root.title("Updater")
