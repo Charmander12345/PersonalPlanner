@@ -39,6 +39,16 @@ def getWindowStyle():
     except KeyError:
         writeINI("customization","style","optimised")
         return "optimised"
+    
+def getWindowXY():
+    try:
+        x = int(config["window"]["x"])
+        y = int(config["window"]["y"])
+        return x,y
+    except KeyError:
+        writeINI("window","x","700")
+        writeINI("window","y","400")
+        return 700,400
 def getLoginState():
     try:
         if config["data"]["loginstate"] == "true":
