@@ -77,10 +77,15 @@ class MyApp(ctk.CTk):
         self.ClockFrame.place(relx=0.93,rely=0.07,anchor="center",relwidth=0.15,relheight=0.15)
         self.LeftSideBar = ctk.CTkFrame(self.main_screen,corner_radius=0)
         self.LeftSideBar.place(relx=0,rely=0.5,anchor="center",relwidth=0.1,relheight=1)
-        self.settingsIcon = ctk.CTkImage(light_image=Image.open(pathlib.Path("icons/Settings_light.png")),dark_image=Image.open(pathlib.Path("icons/Settings_dark.png")))
+        if getattr(sys, 'frozen', False):
+            self.base_path = pathlib.Path(sys._MEIPASS)
+        else:
+            self.base_path = pathlib.Path(".")
+
+        self.settingsIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/Settings_light.png"),dark_image=Image.open(self.base_path/"icons/Settings_dark.png"))
         self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
         self.SettingsButton.place(relx=0.75,rely=0.95,anchor="center")
-        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open(pathlib.Path("icons/home_light.png")),dark_image=Image.open(pathlib.Path("icons/home_dark.png")))
+        self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/home_light.png"),dark_image=Image.open(self.base_path/"icons/home_dark.png"))
         print(os.path.exists(pathlib.Path("icons/home_light.png")))
         self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="#333333",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
@@ -248,8 +253,14 @@ class MyApp(ctk.CTk):
         elif self.updater.check_for_update() == None:
             self.updatebanner = ctk_components.CTkNotification(self,state="error",message="Version data damaged. Updates may not work as intended")
             time.sleep(4)
-            self.updatebanner.destroy()
+            try:
+                self.updatebanner.destroy()
+            except RuntimeError:
+                pass
         else:
             self.updatebanner = ctk_components.CTkNotification(self,state="info",message="Client Version up to date")
             time.sleep(4)
-            self.updatebanner.destroy()
+            try:
+                self.updatebanner.destroy()
+            except RuntimeError:
+                pass
