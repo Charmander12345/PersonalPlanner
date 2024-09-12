@@ -15,7 +15,7 @@ import pywinstyles
 from CTkMessagebox import *
 from Classes import Setting,updatermodule
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ADDONS')))
-from ADDONS import ctk_components
+from Extras import ctk_components
 import threading
 import subprocess
 import pathlib

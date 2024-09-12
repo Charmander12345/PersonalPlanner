@@ -37,8 +37,8 @@ def getWindowStyle():
     try:
         return config["customization"]["style"]
     except KeyError:
-        writeINI("customization","style","normal")
-        return "normal"
+        writeINI("customization","style","optimised")
+        return "optimised"
 def getLoginState():
     try:
         if config["data"]["loginstate"] == "true":
