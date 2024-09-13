@@ -9,6 +9,9 @@ V0.1
 - Added clock and date display which scales to the window size
 - Added settings and home button displaying their respective frames (screens).
 
+v0.2
+- Added Calender and mail button.
+- added theme settings with the 3 default themes (blue,dark-blue,green) and 1 custom theme (pink)
 
 # Links
 
