@@ -13,3 +13,8 @@ V0.1
 # Links
 
 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
+[CTkMessageBox](https://github.com/Akascape/CTkMessagebox)
+[CTkToolTip](https://github.com/Akascape/CTkToolTip)
+[py-win-styles](https://github.com/Akascape/py-window-styles)
+[hPyT](https://github.com/Zingzy/hPyT)
+[ctk-components](https://github.com/rudymohammadbali/ctk_components)
