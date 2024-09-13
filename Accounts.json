@@ -1,9 +1,0 @@
-{
-    "accounts": [
-        {
-            "username": "admin",
-            "password_hash": "scrypt:32768:8:1$KYeTTnwh1GIftRV1$1a974d7630397222d939cbcc54c644e88ff69ec796fe6eb5d6e0cc7ae0a816ecaf19889d1b2df051ba08af0b7c46246ef64c7d9da763c0ed55fe54b7319389bf",
-            "data_path": "admin\\admin_profile.data"
-        }
-    ]
-}
