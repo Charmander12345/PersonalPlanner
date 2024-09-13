@@ -19,6 +19,7 @@ from Extras import ctk_components
 import threading
 import subprocess
 import pathlib
+from CTkToolTip import *
 
 
 class MyApp(ctk.CTk):
@@ -26,32 +27,22 @@ class MyApp(ctk.CTk):
         super().__init__()
         self.title("Personal Planner")
         self.minsize(width=700,height=400)
-        self.loginscreen = ctk.CTkFrame(self)
-        self.main_screen = ctk.CTkFrame(self)
-        self.loading_screen = ctk.CTkFrame(self)
         self.Font = "Comic Sans MS"
         self.WindowStyle = DataHandling.getWindowStyle()
         self.windowmode = DataHandling.getWindowMode()
         self.updater = updatermodule.Updater("Charmander12345/PersonalPlanner","Classes/__init__.py")
+        ctk.set_appearance_mode(DataHandling.getAPMode())
+        self.APMode = DataHandling.getAPMode()
+        ctk.set_default_color_theme(DataHandling.getTheme())
         self.theme = DataHandling.getTheme()
-        ctk.set_appearance_mode(self.theme)
-        if ctk.get_appearance_mode() == "Dark":
-            self.ButtonHoverColor = "#4d4d4d"
-        elif ctk.get_appearance_mode() == "Light":
-            self.ButtonHoverColor = "#C0C0C0"
-        else:
-            he = ctk.AppearanceModeTracker()
-            if he.detect_appearance_mode() == 0:
-                self.ButtonHoverColor = "#C0C0C0"
-                print("System ist Light Mode")
-            else:
-                self.ButtonHoverColor = "#4d4d4d"
-                print("System ist im Dark Mode")
-        self.create_widgets()
         self.protocol("WM_DELETE_WINDOW",self.SaveWindowState)
+        self.logged_in = False
+        self.create_widgets()
         
-
     def create_widgets(self):
+        self.loginscreen = ctk.CTkFrame(self)
+        self.main_screen = ctk.CTkFrame(self)
+        self.loading_screen = ctk.CTkFrame(self)
         self.titleLabel = ctk.CTkLabel(self.loginscreen, text="Personal Planner",font=(self.Font,20))
         self.titleLabel.place(rely=0.1,relx=0.5,anchor="center")
         self.LoginInfo = ctk.CTkLabel(self.loginscreen,text="Login or create an Account",font=(self.Font,18))
@@ -82,30 +73,49 @@ class MyApp(ctk.CTk):
         else:
             self.base_path = pathlib.Path(".")
         self.settingsIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/Settings_light.png"),dark_image=Image.open(self.base_path/"icons/Settings_dark.png"))
-        self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_settings)
+        self.SettingsButton = ctk.CTkButton(self.LeftSideBar,image=self.settingsIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,cursor="hand2",command=self.show_settings)
+        self.SettingsToolTip = CTkToolTip(widget=self.SettingsButton,message="Go to settings page",delay=1)
         self.SettingsButton.place(relx=0.75,rely=0.95,anchor="center")
+        #Home
         self.HomeScreenIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/home_light.png"),dark_image=Image.open(self.base_path/"icons/home_dark.png"))
-        print(os.path.exists(pathlib.Path("icons/home_light.png")))
-        self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_home)
+        self.HomeButton = ctk.CTkButton(self.LeftSideBar,image=self.HomeScreenIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,cursor="hand2",command=self.show_home)
+        self.HomeToolTip = CTkToolTip(message="Go to the home page",widget=self.HomeButton,delay=1)
         self.HomeButton.place(relx=0.75,rely=0.05,anchor="center")
         #Mail
         self.MailFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
         self.MailIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/mail_light.png"),dark_image=Image.open(self.base_path/"icons/mail_dark.png"))
-        self.MailButton = ctk.CTkButton(self.LeftSideBar,image=self.MailIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,hover_color=self.ButtonHoverColor,cursor="hand2",command=self.show_mail)
+        self.MailButton = ctk.CTkButton(self.LeftSideBar,image=self.MailIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,cursor="hand2",command=self.show_mail)
+        self.MailToolTip = CTkToolTip(widget=self.MailButton,message="Go to the mail page",delay=1)
         self.MailButton.place(relx=0.75,rely=0.15,anchor="center")
-        self.MailTitleFrame = ctk.CTkFrame(self.MailFrame,corner_radius=20,height=30,width=200)
+        self.MailTitleFrame = ctk.CTkFrame(self.MailFrame,corner_radius=20,height=40,width=200)
         self.MailTitleFrame.place(rely=0.05,relx=0.5,anchor="center")
         self.MailLabel = ctk.CTkLabel(self.MailTitleFrame,text="Mail",font=(self.Font,20))
         self.MailLabel.place(relx=0.5,rely=0.5,anchor="center")
+        #Calender
+        self.CalenderFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
+        self.CalenderIcon = ctk.CTkImage(light_image=Image.open(self.base_path/"icons/calender_light.png"),dark_image=Image.open(self.base_path/"icons/calender_dark.png"))
+        self.CalenderButton = ctk.CTkButton(self.LeftSideBar,image=self.CalenderIcon,text="",fg_color="transparent",width=30,height=40,corner_radius=40,cursor="hand2",command=self.show_calender)
+        self.CalenderToolTip = CTkToolTip(widget=self.CalenderButton,message="Go to the calender page",delay=1)
+        self.CalenderButton.place(relx=0.75,rely=0.25,anchor="center")
+        self.CalenderTitleFrame = ctk.CTkFrame(self.CalenderFrame,corner_radius=20,height=40,width=200)
+        self.CalenderTitleFrame.place(rely=0.05,relx=0.5,anchor="center")
+        self.CalenderLabel = ctk.CTkLabel(self.CalenderTitleFrame,text="Calender",font=(self.Font,20))
+        self.CalenderLabel.place(relx=0.5,rely=0.5,anchor="center")
         #Settings
         self.SettingsFrame = ctk.CTkFrame(self.main_screen,corner_radius=20)
-        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection,selected_option=self.theme)
-        self.AppearanceMode.pack(fill="x", expand=True)
+        self.AppearanceMode = Setting.Settings(master=self.SettingsFrame,settingsname="Appearance Mode",optiontype=0,options=["Light","Dark"],font=(self.Font,16),callback=self.handle_option_selection,selected_option=self.APMode)
+        self.AppearanceMode.pack(fill="x", expand=True,padx=2)
+        self.ColorTheme = Setting.Settings(self.SettingsFrame,"Color Theme",0,["blue","dark blue","green","pink"],font=(self.Font,16),callback=self.handle_option_selection,selected_option=self.theme)
+        self.ColorTheme.pack(fill="x",expand=True,padx=2)
         #Display the loginscreen
-        self.show_Login()
-        #Check for updates in the background
-        self.updatethread = threading.Thread(target=self.check_for_update)
-        self.updatethread.start()
+        if not self.logged_in:
+            self.show_Login()
+            #Check for updates in the background
+            self.updatethread = threading.Thread(target=self.check_for_update)
+            self.updatethread.start()
+        else:
+            self.show_Main()
+        
 
     def show_Login(self):
         window_frame.center(self)
@@ -139,19 +149,29 @@ class MyApp(ctk.CTk):
     def show_settings(self):
         self.HomeScreen.place_forget()
         self.MailFrame.place_forget()
+        self.CalenderFrame.place_forget()
         self.SettingsFrame.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
         pywinstyles.apply_style(self,self.WindowStyle)
 
     def show_home(self):
         self.SettingsFrame.place_forget()
         self.MailFrame.place_forget()
+        self.CalenderFrame.place_forget()
         self.HomeScreen.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
         pywinstyles.apply_style(self,self.WindowStyle)
 
     def show_mail(self):
         self.SettingsFrame.place_forget()
         self.HomeScreen.place_forget()
+        self.CalenderFrame.place_forget()
         self.MailFrame.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
+        pywinstyles.apply_style(self,self.WindowStyle)
+
+    def show_calender(self):
+        self.SettingsFrame.place_forget()
+        self.HomeScreen.place_forget()
+        self.MailFrame.place_forget()
+        self.CalenderFrame.place(relx=0.55,rely=0.5,anchor="center",relwidth=0.9,relheight=1)
         pywinstyles.apply_style(self,self.WindowStyle)
 
     def set_active_button(self,button:ctk.CTkButton):
@@ -161,7 +181,8 @@ class MyApp(ctk.CTk):
         DataHandling.writeINI("window","windowmode",self.state())
         DataHandling.writeINI("window","x",str(self.winfo_width()))
         DataHandling.writeINI("window","y",str(self.winfo_height()))
-        DataHandling.writeINI("customization","theme",ctk.get_appearance_mode())
+        DataHandling.writeINI("customization","mode",self.APMode)
+        DataHandling.writeINI("customization","theme",self.theme)
         DataHandling.writeINI("customization","style",self.WindowStyle)
         self.destroy()
 
@@ -174,6 +195,7 @@ class MyApp(ctk.CTk):
         try:
             if DataHandling.LOGIN(Username=Username,Password=Password):
                 self.LoadAccountData(Username)
+                self.logged_in = True
         except Errors.UnknownAccountError as e:
             CTkMessagebox(self,title="UnknownAccountError",message=e,icon="cancel",cancel_button="None")
             #pymsgbox.alert(e,"UnknownAccountError")
@@ -259,29 +281,59 @@ class MyApp(ctk.CTk):
         frame_width = self.ClockFrame.winfo_width()
         frame_height = self.ClockFrame.winfo_height()
         mail_frame_height = self.MailTitleFrame.winfo_height()
-        mail_frame_height = self.MailTitleFrame.winfo_width()
+        mail_frame_width = self.MailTitleFrame.winfo_width()
+        calender_frame_height = self.CalenderTitleFrame.winfo_height()
+        calender_frame_width = self.CalenderTitleFrame.winfo_width()
 
         # Schriftgröße proportional zur Größe des Frames setzen (z.B. basierend auf der Höhe)
         new_font_size = min(frame_width, frame_height) // 4  # Hier kannst du die Skalierung anpassen
         new_font_size_date = min(frame_width, frame_height) // 6
-        new_font_size_Mail = min(mail_frame_height, mail_frame_height) // 7
+        new_font_size_Mail = min(mail_frame_width, mail_frame_height) // 2
+        new_font_size_calender = min(calender_frame_width,calender_frame_height) // 2
         # Schriftgröße im Label aktualisieren
         self.ClockLabel.configure(font=(self.Font, new_font_size))
         self.DateLabel.configure(font=(self.Font, new_font_size_date))
         self.MailLabel.configure(font=(self.Font, new_font_size_Mail))
+        self.CalenderLabel.configure(font=(self.Font,new_font_size_calender))
 
     def handle_option_selection(self,settingsname:str,value:str):
         if settingsname == "Appearance Mode":
-            ctk.set_appearance_mode(value)
-            self.theme = value
             if value == "Dark":
+                ctk.set_appearance_mode(value)
+                self.APMode = "Dark"
                 self.ButtonHoverColor = "#4d4d4d"
                 self.HomeButton.configure(hover_color=self.ButtonHoverColor)
                 self.SettingsButton.configure(hover_color=self.ButtonHoverColor)
-            else:
+                self.MailButton.configure(hover_color=self.ButtonHoverColor)
+                self.CalenderButton.configure(hover_color=self.ButtonHoverColor)
+            elif value == "Light":
+                ctk.set_appearance_mode(value)
+                self.APMode = "Light"
                 self.ButtonHoverColor = "#C0C0C0"
                 self.HomeButton.configure(hover_color=self.ButtonHoverColor)
                 self.SettingsButton.configure(hover_color=self.ButtonHoverColor)
+                self.MailButton.configure(hover_color=self.ButtonHoverColor)
+                self.CalenderButton.configure(hover_color=self.ButtonHoverColor)
+        elif settingsname == "Color Theme":
+            if value == "blue":
+                ctk.set_default_color_theme("blue")
+                self.update()
+                self.theme = "blue"
+            elif value == "dark blue":
+                ctk.set_default_color_theme("dark-blue")
+                self.update()
+                self.theme = "dark-blue"
+            elif value == "green":
+                ctk.set_default_color_theme("green")
+                self.update()
+                self.theme = "green"
+            elif value == "pink":
+                ctk.set_default_color_theme("pink")
+                self.update()
+                self.theme = "pink"
+            restartbanner = ctk_components.CTkBanner(self,state="info",title="Restart to apply changes?",btn1="Restart now",btn2="Not now")
+            if restartbanner.get() == "Restart now":
+                self.reload_widgets()
 
     def check_for_update(self):
         if self.updater.check_for_update():
@@ -307,3 +359,8 @@ class MyApp(ctk.CTk):
                 self.updatebanner.destroy()
             except RuntimeError:
                 pass
+
+    def reload_widgets(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.create_widgets()

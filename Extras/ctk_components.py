@@ -179,16 +179,15 @@ class CTkAlert(ctk.CTkToplevel):
 
 class CTkBanner(ctk.CTkFrame):
     def __init__(self, master, state: str = "info", title: str = "Title", btn1: str = "Action A",
-                 btn2: str = "Action B", side: str = "right_bottom"):
+                 btn2: str = "Action B", side: str = "right_bottom", **kwargs):
         self.root = master
         self.width = 400
         self.height = 100
-        super().__init__(self.root, width=self.width, height=self.height, corner_radius=5, border_width=1)
+        super().__init__(self.root, width=self.width, height=self.height, corner_radius=5, border_width=1,**kwargs)
 
         self.grid_propagate(False)
         self.grid_columnconfigure(1, weight=1)
         self.event = None
-
         self.horizontal, self.vertical = side.split("_")
 
         if state not in ICON_PATH or ICON_PATH[state] is None:
@@ -240,7 +239,6 @@ class CTkNotification(ctk.CTkFrame):
         self.height = 60
         super().__init__(self.root, width=self.width, height=self.height, corner_radius=5, border_width=1)
         self.grid_propagate(False)
-
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 

@@ -26,12 +26,19 @@ def getWindowMode():
         writeINI("window","windowmode","normal")
         return "normal"
 
+def getAPMode():
+    try:
+        return config["customization"]["mode"]
+    except KeyError:
+        writeINI("customization","mode","dark")
+        return "dark"
+    
 def getTheme():
     try:
         return config["customization"]["theme"]
     except KeyError:
-        writeINI("customization","theme","System")
-        return "System"
+        writeINI("customization","theme","blue")
+        return "blue"
     
 def getWindowStyle():
     try:
